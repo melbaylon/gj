@@ -1,0 +1,34 @@
+name: Go MacOS Build
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build-macos:
+    # macos-13 is the oldest stable runner (Ventura) but supports Monterey targets
+    runs-on: macos-13
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          check-latest: true
+
+      - name: Build for Intel MacOS (Monterey+)
+        run: go build -v -o bin/hello-macos-amd64
+        env:
+          GOOS: darwin
+          GOARCH: amd64
+          # Ensures binary compatibility back to macOS 12
+          MACOSX_DEPLOYMENT_TARGET: "12.0"
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-binary
+          path: bin/hello-macos-amd64
