@@ -7,7 +7,7 @@ on:
 jobs:
   build-macos:
     # macos-13 is the oldest stable runner (Ventura) but supports Monterey targets
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
