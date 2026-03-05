@@ -1,4 +1,4 @@
-module github.com/yourusername/gj
+module github.com/melbaylon/gj
 
 go 1.24.0
 
