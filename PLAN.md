@@ -26,7 +26,7 @@ This document outlines the roadmap for building a robust, modular, and extensibl
 
 ## Milestone 4: Polish & Advanced Features
 - [x] **Task 4.1: File Indicators (`-F`).** Implement logic to append type-specific characters: `/` for directories, `*` for executables, `@` for symlinks, etc.
-- [ ] **Task 4.2: ANSI Color System.** Define a color configuration and apply ANSI escape codes to output based on file type and permissions.
+- [x] **Task 4.2: ANSI Color System.** Define a color configuration and apply ANSI escape codes to output based on file type and permissions.
 - [ ] **Task 4.3: Recursive Listing (`-R`).** Implement a depth-first traversal to list subdirectories, including path headers for each section.
 - [ ] **Task 4.4: Terminal Detection.** Use `isatty` logic to detect if output is a terminal to enable/disable colors and multi-column mode.
 - [ ] **Task 4.5: Multi-column Formatting.** Implement a grid-based layout for standard output when not using `-l`, optimizing for terminal width.
