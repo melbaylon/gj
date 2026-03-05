@@ -1,11 +1,11 @@
-name: go macos build
+name: go build
 
 on:
   push:
     branches: ["main"]
 
 jobs:
-  build-macos:
+  build:
     runs-on: macos-latest
     permissions:
       contents: write
@@ -17,15 +17,21 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.24" # Upgraded to match go.mod if needed, or stick to 1.22
           check-latest: true
 
       - name: Build for Intel MacOS (Monterey+)
-        run: go build -ldflags="-s -w" -gcflags="-l=4" -o bin/gs main.go
+        run: go build -ldflags="-s -w" -o bin/gs-macos main.go
         env:
           GOOS: darwin
           GOARCH: amd64
           MACOSX_DEPLOYMENT_TARGET: "12.0"
+
+      - name: Build for Windows x64
+        run: go build -ldflags="-s -w" -o bin/gs-windows.exe main.go
+        env:
+          GOOS: windows
+          GOARCH: amd64
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -35,5 +41,7 @@ jobs:
           body: |
             Automated build from commit ${{ github.sha }}
             Branch: ${{ github.ref_name }}
-          files: bin/gs
+          files: |
+            bin/gs-macos
+            bin/gs-windows.exe
           make_latest: true
