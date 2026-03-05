@@ -39,12 +39,18 @@ This document outlines the roadmap for building a robust, modular, and extensibl
 - [x] **Task 4.4: Terminal Detection.** Use `isatty` logic to detect if output is a terminal to enable/disable colors and multi-column mode.
 - [x] **Task 4.5: Multi-column Formatting.** Implement a grid-based layout for standard output when not using `-l`, optimizing for terminal width.
 
+## Milestone 5: Documentation & Discovery
+- [x] **Task 5.1: Custom `help` Command.** Implement logic to detect `help` as a primary argument and display a formatted guide instead of listing files.
+- [x] **Task 5.2: Enhanced Usage Strings.** Refine the descriptions for all flags (Milestones 1-4) within the `flag` package to ensure the default `-h` output is professional.
+- [x] **Task 5.3: Examples & Versioning.** Add a "Examples" section to the help output and implement a `--version` flag to track releases.
+
 ## Current Status & Next Steps
 ### Project Status: Feature Complete (v1.0)
 The project has reached its initial goal of becoming a robust, fully-functional `ls` replacement. It features:
 - Core `ls` functionality (listing, sorting, hidden files).
 - Advanced Long Format (`-l`, `-h`) with proper tabular alignment and Unix metadata.
 - Polish features (`-F`, colors, `-R`, TTY-aware multi-column formatting).
+- Built-in documentation and discovery (`gs help`, `gs -v`).
 
 ## Architectural Principles
 1. **Pipe-and-Filter:** Data flows from Scanner -> Filter -> Sorter -> Formatter -> Printer.
