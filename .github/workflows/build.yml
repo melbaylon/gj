@@ -17,7 +17,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.22" # Upgraded to match go.mod if needed, or stick to 1.22
+          go-version: "1.24" # Upgraded to match go.mod if needed, or stick to 1.22
           check-latest: true
 
       - name: Build for Intel MacOS (Monterey+)
@@ -42,6 +42,6 @@ jobs:
             Automated build from commit ${{ github.sha }}
             Branch: ${{ github.ref_name }}
           files: |
-            bin/gs
-            bin/gs.exe
+            bin/gs-macos
+            bin/gs-windows.exe
           make_latest: true
