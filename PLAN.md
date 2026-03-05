@@ -3,7 +3,7 @@
 This document outlines the roadmap for building a robust, modular, and extensible `ls` clone in Go.
 
 ## Milestone 1: The Foundation (Basic Listing)
-- [ ] **Task 1.1: Project Structure & Setup.** Initialize Go modules and create a package structure that separates CLI argument handling from core file-system logic.
+- [x] **Task 1.1: Project Structure & Setup.** Initialize Go modules and create a package structure that separates CLI argument handling from core file-system logic.
 - [ ] **Task 1.2: Argument & Flag Parsing.** Implement basic flag parsing (e.g., using the `flag` package) to handle target directories and simple boolean options.
 - [ ] **Task 1.3: Core Directory Reading.** Use `os.ReadDir` to fetch file entries for a given path and print them to standard output.
 
