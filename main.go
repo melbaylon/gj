@@ -16,6 +16,8 @@ func main() {
 	sortBySize := flag.Bool("S", false, "sort by file size") // Note: original ls uses -S for size
 	reverse := flag.Bool("r", false, "reverse order while sorting")
 	classify := flag.Bool("F", false, "append indicator (one of */=>@|) to entries")
+	color := flag.String("color", "always", "colorize the output; WHEN can be 'always' (default), 'auto', or 'never'")
+	recursive := flag.Bool("R", false, "list subdirectories recursively")
 
 	flag.Parse()
 
@@ -25,11 +27,17 @@ func main() {
 		paths = []string{"."}
 	}
 
-	for _, path := range paths {
+	for i, path := range paths {
+		if len(paths) > 1 {
+			fmt.Printf("%s:\n", path)
+		}
 		// Basic orchestration for Milestone 1
-		err := ls.List(path, *all, *long, *sortByTime, *sortBySize, *reverse, *classify)
+		err := ls.List(path, *all, *long, *sortByTime, *sortBySize, *reverse, *classify, *color, *recursive)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ls: %s: %v\n", path, err)
+		}
+		if i < len(paths)-1 {
+			fmt.Println()
 		}
 	}
 }
