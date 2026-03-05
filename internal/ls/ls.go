@@ -11,7 +11,7 @@ import (
 // List scans the directory at the given path and prints its contents.
 // This function will serve as the entry point for the ls logic and will be
 // expanded throughout the project milestones.
-func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, reverse bool) error {
+func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, reverse bool, classify bool) error {
 	// Task 1.3: Core Directory Reading
 	dirEntries, err := os.ReadDir(path)
 	if err != nil {
@@ -39,11 +39,16 @@ func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, re
 
 	// For now, just print the names. Sorting and proper formatting will come later.
 	for _, entry := range fileEntries {
+		name := entry.Name
+		if classify {
+			name += getIndicator(entry.Mode)
+		}
+
 		// Milestone 3 will implement proper tabular formatting for 'long' mode.
 		if long {
-			fmt.Printf("Metadata placeholder for: %s\n", entry.Name)
+			fmt.Printf("Metadata placeholder for: %s\n", name)
 		} else {
-			fmt.Printf("%s  ", entry.Name)
+			fmt.Printf("%s  ", name)
 		}
 	}
 
@@ -52,6 +57,27 @@ func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, re
 	}
 
 	return nil
+}
+
+// getIndicator returns the type-specific character based on file mode.
+func getIndicator(mode os.FileMode) string {
+	if mode.IsDir() {
+		return "/"
+	}
+	if mode&os.ModeSymlink != 0 {
+		return "@"
+	}
+	if mode&os.ModeSocket != 0 {
+		return "="
+	}
+	if mode&os.ModeNamedPipe != 0 {
+		return "|"
+	}
+	// Check for executable bits (owner, group, others)
+	if mode&0111 != 0 {
+		return "*"
+	}
+	return ""
 }
 
 // sortFiles sorts the slice of FileEntry based on the provided flags.
