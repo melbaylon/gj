@@ -17,12 +17,20 @@ This document outlines the roadmap for building a robust, modular, and extensibl
     - `-r`: Reverse the final sorted list.
 
 ## Milestone 3: The Long Format (`-l`)
-- [ ] **Task 3.1: Raw ID Extraction.** Update `FileEntry` and `NewFileEntry` to capture raw UID, GID, and Hard Link count using `syscall.Stat_t`.
-- [ ] **Task 3.2: Identity Resolution.** Integrate `os/user` to resolve numeric UIDs and GIDs into actual username and group names.
-- [ ] **Task 3.3: Permission String Formatter.** Implement logic to convert `os.FileMode` bits into the standard 10-character Unix string (e.g., `drwxr-xr-x`).
-- [ ] **Task 3.4: Basic Tabular Layout.** Use `text/tabwriter` to create the basic `-l` columns: permissions, links, owner, group, size, date, and name.
-- [ ] **Task 3.5: Time Formatting.** Standardize the modification time display (e.g., "Jan _2 15:04" or "Jan _2  2006") to match standard `ls` behavior.
-- [ ] **Task 3.6: Human-Readable Sizes (`-h`).** Add an optional task to format file sizes into KB, MB, GB, etc., when the `-h` flag is provided.
+- [x] **Task 3.1: Metadata Expansion.**
+    - [x] 3.1.1: Add `Owner`, `Group`, `Nlink`, and `Blocks` fields to `FileEntry`.
+    - [x] 3.1.2: Update `NewFileEntry` to extract `syscall.Stat_t` (on Unix) to populate raw IDs and link counts.
+- [x] **Task 3.2: Identity Resolution.**
+    - [x] 3.2.1: Implement caching for `os/user` lookups to resolve UIDs and GIDs efficiently.
+    - [x] 3.2.2: Fallback to numeric IDs if resolution fails.
+- [x] **Task 3.3: Permission & Type String.**
+    - [x] 3.3.1: Implement a custom formatter to convert `os.FileMode` to the 10-character string (e.g., `drwxr-xr-x`).
+- [x] **Task 3.4: Tabular Long Listing.**
+    - [x] 3.4.1: Integrate `text/tabwriter` into the `List` function for the `-l` path.
+    - [x] 3.4.2: Align columns: Mode, Nlink, Owner, Group, Size, ModTime, Name.
+- [x] **Task 3.5: Advanced Formatting.**
+    - [x] 3.5.1: Implement `-h` (human-readable) size conversion (B, K, M, G).
+    - [x] 3.5.2: Logic for "Recent" vs "Old" time formatting (standard `ls` behavior).
 
 ## Milestone 4: Polish & Advanced Features
 - [x] **Task 4.1: File Indicators (`-F`).** Implement logic to append type-specific characters: `/` for directories, `*` for executables, `@` for symlinks, etc.
@@ -30,6 +38,13 @@ This document outlines the roadmap for building a robust, modular, and extensibl
 - [x] **Task 4.3: Recursive Listing (`-R`).** Implement a depth-first traversal to list subdirectories, including path headers for each section.
 - [x] **Task 4.4: Terminal Detection.** Use `isatty` logic to detect if output is a terminal to enable/disable colors and multi-column mode.
 - [x] **Task 4.5: Multi-column Formatting.** Implement a grid-based layout for standard output when not using `-l`, optimizing for terminal width.
+
+## Current Status & Next Steps
+### Project Status: Feature Complete (v1.0)
+The project has reached its initial goal of becoming a robust, fully-functional `ls` replacement. It features:
+- Core `ls` functionality (listing, sorting, hidden files).
+- Advanced Long Format (`-l`, `-h`) with proper tabular alignment and Unix metadata.
+- Polish features (`-F`, colors, `-R`, TTY-aware multi-column formatting).
 
 ## Architectural Principles
 1. **Pipe-and-Filter:** Data flows from Scanner -> Filter -> Sorter -> Formatter -> Printer.
