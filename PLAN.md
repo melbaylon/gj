@@ -17,16 +17,19 @@ This document outlines the roadmap for building a robust, modular, and extensibl
     - `-r`: Reverse the final sorted list.
 
 ## Milestone 3: The Long Format (`-l`)
-- [ ] **Task 3.1: Metadata Enrichment.** Use `os.Lstat` and the `syscall` (or `os/user`) package to resolve UIDs and GIDs to actual owner and group names.
-- [ ] **Task 3.2: Tabular Formatting.** Use `text/tabwriter` to ensure columns align perfectly regardless of varying filename or size lengths.
-- [ ] **Task 3.3: Permission String Parsing.** Convert `os.FileMode` into the standard Unix permission string (e.g., `-rw-r--r--`).
+- [ ] **Task 3.1: Raw ID Extraction.** Update `FileEntry` and `NewFileEntry` to capture raw UID, GID, and Hard Link count using `syscall.Stat_t`.
+- [ ] **Task 3.2: Identity Resolution.** Integrate `os/user` to resolve numeric UIDs and GIDs into actual username and group names.
+- [ ] **Task 3.3: Permission String Formatter.** Implement logic to convert `os.FileMode` bits into the standard 10-character Unix string (e.g., `drwxr-xr-x`).
+- [ ] **Task 3.4: Basic Tabular Layout.** Use `text/tabwriter` to create the basic `-l` columns: permissions, links, owner, group, size, date, and name.
+- [ ] **Task 3.5: Time Formatting.** Standardize the modification time display (e.g., "Jan _2 15:04" or "Jan _2  2006") to match standard `ls` behavior.
+- [ ] **Task 3.6: Human-Readable Sizes (`-h`).** Add an optional task to format file sizes into KB, MB, GB, etc., when the `-h` flag is provided.
 
 ## Milestone 4: Polish & Advanced Features
-- [ ] **Task 4.1: Indicators & Colors.**
-    - `-F`: Append indicators like `/` for directories and `*` for executables.
-    - ANSI Colors: Apply colors to output based on file type (e.g., blue for directories, green for executables).
-- [ ] **Task 4.2: Recursion (`-R`).** Implement a recursive walk to list all subdirectories and their contents.
-- [ ] **Task 4.3: Terminal Intelligence.** Detect if `stdout` is a terminal or a pipe to toggle between multi-column and single-column output automatically.
+- [ ] **Task 4.1: File Indicators (`-F`).** Implement logic to append type-specific characters: `/` for directories, `*` for executables, `@` for symlinks, etc.
+- [ ] **Task 4.2: ANSI Color System.** Define a color configuration and apply ANSI escape codes to output based on file type and permissions.
+- [ ] **Task 4.3: Recursive Listing (`-R`).** Implement a depth-first traversal to list subdirectories, including path headers for each section.
+- [ ] **Task 4.4: Terminal Detection.** Use `isatty` logic to detect if output is a terminal to enable/disable colors and multi-column mode.
+- [ ] **Task 4.5: Multi-column Formatting.** Implement a grid-based layout for standard output when not using `-l`, optimizing for terminal width.
 
 ## Architectural Principles
 1. **Pipe-and-Filter:** Data flows from Scanner -> Filter -> Sorter -> Formatter -> Printer.
