@@ -21,7 +21,7 @@ jobs:
           check-latest: true
 
       - name: Build for Intel MacOS (Monterey+)
-        run: go build -ldflags="-s -w" -gcflags="-l=4" -o bin/gj main.go
+        run: go build -ldflags="-s -w" -gcflags="-l=4" -o bin/gs main.go
         env:
           GOOS: darwin
           GOARCH: amd64
@@ -35,5 +35,5 @@ jobs:
           body: |
             Automated build from commit ${{ github.sha }}
             Branch: ${{ github.ref_name }}
-          files: bin/gj
+          files: bin/gs
           make_latest: true
