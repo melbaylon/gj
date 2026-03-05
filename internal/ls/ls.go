@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"slices" // For Go 1.21+
 	"strings"
+	"text/tabwriter"
+	"time"
 
 	"golang.org/x/term"
 )
@@ -23,7 +25,7 @@ const (
 // List scans the directory at the given path and prints its contents.
 // This function will serve as the entry point for the ls logic and will be
 // expanded throughout the project milestones.
-func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, reverse bool, classify bool, colorMode string, recursive bool) error {
+func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, reverse bool, classify bool, colorMode string, recursive bool, humanReadable bool) error {
 	// Task 1.3: Core Directory Reading
 	dirEntries, err := os.ReadDir(path)
 	if err != nil {
@@ -66,7 +68,8 @@ func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, re
 	}
 
 	if long {
-		// Milestone 3 will implement proper tabular formatting for 'long' mode.
+		// Task 3.4: Tabular Long Listing
+		w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', 0)
 		for _, entry := range fileEntries {
 			displayName := entry.Name
 			if shouldColor {
@@ -75,8 +78,15 @@ func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, re
 			if classify {
 				displayName += getIndicator(entry.Mode)
 			}
-			fmt.Printf("Metadata placeholder for: %s\n", displayName)
+
+			modeStr := FormatMode(entry.Mode)
+			sizeStr := formatSize(entry.Size, humanReadable)
+			timeStr := formatTime(entry.ModTime)
+
+			fmt.Fprintf(w, "%s\t%d\t%s\t%s\t%s\t%s\t%s\n",
+				modeStr, entry.Nlink, entry.Owner, entry.Group, sizeStr, timeStr, displayName)
 		}
+		w.Flush()
 	} else if !isTTY {
 		// Task 4.5: If not a TTY, print one per line or simple space-separated
 		// Default behavior of ls without a TTY is often one-per-line (e.g., when piped)
@@ -103,7 +113,7 @@ func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, re
 
 		for _, subDir := range subDirs {
 			fmt.Printf("\n%s:\n", subDir.Path)
-			err := List(subDir.Path, all, long, sortByTime, sortBySize, reverse, classify, colorMode, recursive)
+			err := List(subDir.Path, all, long, sortByTime, sortBySize, reverse, classify, colorMode, recursive, humanReadable)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "ls: %s: %v\n", subDir.Path, err)
 			}
@@ -111,6 +121,34 @@ func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, re
 	}
 
 	return nil
+}
+
+// formatSize converts bytes into human-readable strings if enabled.
+func formatSize(size int64, human bool) string {
+	if !human {
+		return fmt.Sprintf("%d", size)
+	}
+	const unit = 1024
+	if size < unit {
+		return fmt.Sprintf("%d", size)
+	}
+	div, exp := int64(unit), 0
+	for n := size / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f%c", float64(size)/float64(div), "KMGTP"[exp])
+}
+
+// formatTime formats the modification time according to ls standards.
+func formatTime(t time.Time) string {
+	now := time.Now()
+	// If the time is older than 6 months or in the future, show year instead of time
+	sixMonthsAgo := now.AddDate(0, -6, 0)
+	if t.Before(sixMonthsAgo) || t.After(now) {
+		return t.Format("Jan _2  2006")
+	}
+	return t.Format("Jan _2 15:04")
 }
 
 // printColumns implements a grid-based layout for TTY output.
