@@ -1,11 +1,11 @@
 package ls
 
 import (
+	"cmp"
 	"fmt"
 	"os"
 	"path/filepath"
 	"slices" // For Go 1.21+
-	"sort"
 )
 
 // List scans the directory at the given path and prints its contents.
@@ -73,7 +73,7 @@ func sortFiles(entries []*FileEntry, sortByTime bool, sortBySize bool, reverse b
 			}
 		}
 		// Default: sort by name
-		return sort.String(a.Name).Compare(sort.String(b.Name))
+		return cmp.Compare(a.Name, b.Name)
 	})
 
 	if reverse {
