@@ -38,3 +38,4 @@ This document outlines the roadmap for building a robust, modular, and extensibl
 
 # Build command
 Builds must be called `gs`
+`mkdir -p builds && go build -ldflags="-s -w" -o builds/gs . && ls -lh builds/gs`
