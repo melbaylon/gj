@@ -18,6 +18,7 @@ func main() {
 	classify := flag.Bool("F", false, "append indicator (one of */=>@|) to entries")
 	color := flag.String("color", "always", "colorize the output; WHEN can be 'always' (default), 'auto', or 'never'")
 	recursive := flag.Bool("R", false, "list subdirectories recursively")
+	humanReadable := flag.Bool("h", false, "with -l, print sizes like 1K 234M 2G etc.")
 
 	flag.Parse()
 
@@ -32,7 +33,7 @@ func main() {
 			fmt.Printf("%s:\n", path)
 		}
 		// Basic orchestration for Milestone 1
-		err := ls.List(path, *all, *long, *sortByTime, *sortBySize, *reverse, *classify, *color, *recursive)
+		err := ls.List(path, *all, *long, *sortByTime, *sortBySize, *reverse, *classify, *color, *recursive, *humanReadable)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "ls: %s: %v\n", path, err)
 		}
