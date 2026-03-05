@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/yourusername/gj/internal/ls"
+	"github.com/melbaylon/gj/internal/ls"
 )
 
 func main() {
