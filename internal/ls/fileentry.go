@@ -2,6 +2,7 @@ package ls
 
 import (
 	"io/fs"
+	"os"
 	"time"
 )
 
@@ -25,7 +26,7 @@ func NewFileEntry(path string, dirEntry fs.DirEntry) (*FileEntry, error) {
 		// If dirEntry.Info() returns an error, try os.Lstat directly on the path.
 		// This can happen for broken symlinks where Info() might fail,
 		// but Lstat would still give information about the link itself.
-		info, err = fs.Lstat(path)
+		info, err = os.Lstat(path)
 		if err != nil {
 			return nil, err
 		}
