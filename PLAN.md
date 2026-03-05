@@ -35,3 +35,6 @@ This document outlines the roadmap for building a robust, modular, and extensibl
 1. **Pipe-and-Filter:** Data flows from Scanner -> Filter -> Sorter -> Formatter -> Printer.
 2. **Strategy Pattern:** Use interfaces for different sorting and formatting strategies to allow easy addition of new flags.
 3. **Platform Independence:** While `ls` is Unix-centric, use Go's standard library abstractions where possible to keep the code clean.
+
+# Build command
+Builds must be called `gs`
