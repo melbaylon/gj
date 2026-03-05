@@ -6,6 +6,9 @@ import (
 	"os"
 	"path/filepath"
 	"slices" // For Go 1.21+
+	"strings"
+
+	"golang.org/x/term"
 )
 
 const (
@@ -55,27 +58,41 @@ func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, re
 	// Task 2.3: Sorting Engine
 	sortFiles(fileEntries, sortByTime, sortBySize, reverse)
 
-	// For now, just print the names. Sorting and proper formatting will come later.
-	for _, entry := range fileEntries {
-		displayName := entry.Name
-		if colorMode == "always" { // Simple check for now, Task 4.4 will handle 'auto'
-			displayName = applyColor(entry.Name, entry.Mode)
-		}
-
-		if classify {
-			displayName += getIndicator(entry.Mode)
-		}
-
-		// Milestone 3 will implement proper tabular formatting for 'long' mode.
-		if long {
-			fmt.Printf("Metadata placeholder for: %s\n", displayName)
-		} else {
-			fmt.Printf("%s  ", displayName)
-		}
+	// Task 4.4: Terminal Detection
+	isTTY := term.IsTerminal(int(os.Stdout.Fd()))
+	shouldColor := false
+	if colorMode == "always" || (colorMode == "auto" && isTTY) {
+		shouldColor = true
 	}
 
-	if !long {
-		fmt.Println()
+	if long {
+		// Milestone 3 will implement proper tabular formatting for 'long' mode.
+		for _, entry := range fileEntries {
+			displayName := entry.Name
+			if shouldColor {
+				displayName = applyColor(entry.Name, entry.Mode)
+			}
+			if classify {
+				displayName += getIndicator(entry.Mode)
+			}
+			fmt.Printf("Metadata placeholder for: %s\n", displayName)
+		}
+	} else if !isTTY {
+		// Task 4.5: If not a TTY, print one per line or simple space-separated
+		// Default behavior of ls without a TTY is often one-per-line (e.g., when piped)
+		for _, entry := range fileEntries {
+			displayName := entry.Name
+			if shouldColor {
+				displayName = applyColor(entry.Name, entry.Mode)
+			}
+			if classify {
+				displayName += getIndicator(entry.Mode)
+			}
+			fmt.Println(displayName)
+		}
+	} else {
+		// Task 4.5: Multi-column Formatting for TTY
+		printColumns(fileEntries, shouldColor, classify)
 	}
 
 	// Task 4.3: Recursive Listing
@@ -94,6 +111,65 @@ func List(path string, all bool, long bool, sortByTime bool, sortBySize bool, re
 	}
 
 	return nil
+}
+
+// printColumns implements a grid-based layout for TTY output.
+func printColumns(entries []*FileEntry, shouldColor bool, classify bool) {
+	if len(entries) == 0 {
+		return
+	}
+
+	width, _, err := term.GetSize(int(os.Stdout.Fd()))
+	if err != nil || width <= 0 {
+		width = 80 // Fallback
+	}
+
+	// Prepare list of display names and calculate maximum length
+	maxLen := 0
+	type item struct {
+		display string
+		length  int
+	}
+	items := make([]item, len(entries))
+
+	for i, entry := range entries {
+		display := entry.Name
+		length := len(display)
+		if classify {
+			ind := getIndicator(entry.Mode)
+			display += ind
+			length += len(ind)
+		}
+		if shouldColor {
+			display = applyColor(display, entry.Mode)
+		}
+		items[i] = item{display, length}
+		if length > maxLen {
+			maxLen = length
+		}
+	}
+
+	// Task 4.5: Layout logic
+	columnWidth := maxLen + 2
+	cols := width / columnWidth
+	if cols <= 0 {
+		cols = 1
+	}
+	rows := (len(items) + cols - 1) / cols
+
+	for r := 0; r < rows; r++ {
+		for c := 0; c < cols; c++ {
+			idx := c*rows + r
+			if idx < len(items) {
+				padding := ""
+				if c < cols-1 {
+					padding = strings.Repeat(" ", columnWidth-items[idx].length)
+				}
+				fmt.Printf("%s%s", items[idx].display, padding)
+			}
+		}
+		fmt.Println()
+	}
 }
 
 // applyColor returns the name wrapped in ANSI color codes based on file mode.
