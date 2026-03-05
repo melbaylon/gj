@@ -4,13 +4,13 @@ This document outlines the roadmap for building a robust, modular, and extensibl
 
 ## Milestone 1: The Foundation (Basic Listing)
 - [x] **Task 1.1: Project Structure & Setup.** Initialize Go modules and create a package structure that separates CLI argument handling from core file-system logic.
-- [ ] **Task 1.2: Argument & Flag Parsing.** Implement basic flag parsing (e.g., using the `flag` package) to handle target directories and simple boolean options.
-- [ ] **Task 1.3: Core Directory Reading.** Use `os.ReadDir` to fetch file entries for a given path and print them to standard output.
+- [x] **Task 1.2: Argument & Flag Parsing.** Implement basic flag parsing (e.g., using the `flag` package) to handle target directories and simple boolean options.
+- [x] **Task 1.3: Core Directory Reading.** Use `os.ReadDir` to fetch file entries for a given path and print them to standard output.
 
 ## Milestone 2: Data Processing (Filtering & Sorting)
-- [ ] **Task 2.1: The `FileEntry` Model.** Define a internal struct to store file metadata (Name, Size, Mode, ModTime). This decouples the OS-level data from our display logic.
-- [ ] **Task 2.2: Hidden Files (`-a`).** Implement a filter to skip files starting with `.` unless the "all" flag is set.
-- [ ] **Task 2.3: Sorting Engine.** Build a flexible sorting system:
+- [x] **Task 2.1: The `FileEntry` Model.** Define a internal struct to store file metadata (Name, Size, Mode, ModTime). This decouples the OS-level data from our display logic.
+- [x] **Task 2.2: Hidden Files (`-a`).** Implement a filter to skip files starting with `.` unless the "all" flag is set.
+- [x] **Task 2.3: Sorting Engine.** Build a flexible sorting system:
     - Default: Alphabetical (case-insensitive).
     - `-t`: Sort by modification time.
     - `-S`: Sort by file size.
