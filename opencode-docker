@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# opencode-docker: run opencode in Docker with your current directory mounted
+# Usage: ./opencode-docker [opencode args...]
+#   or add to PATH and call: opencode-docker
+
+IMAGE="opencode-local"
+DOCKERFILE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Build image if it doesn't exist yet
+if ! docker image inspect "$IMAGE" &>/dev/null; then
+    echo "Building opencode Docker image..."
+    docker build -t "$IMAGE" "$DOCKERFILE_DIR"
+fi
+
+# Pass through API key env vars if set locally
+ENV_ARGS=()
+for var in ANTHROPIC_API_KEY OPENAI_API_KEY OPENCODE_API_KEY; do
+    if [[ -n "${!var:-}" ]]; then
+        ENV_ARGS+=(-e "$var=${!var}")
+    fi
+done
+
+docker run -it --rm \
+    -v "$(pwd):/workspace" \
+    -v "$HOME/.opencode/config:/root/.opencode/config" \
+    "${ENV_ARGS[@]}" \
+    "$IMAGE" \
+    opencode
