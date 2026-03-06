@@ -22,7 +22,7 @@ func TestFormatMode(t *testing.T) {
 		// Directories
 		{"directory", os.ModeDir | 0o755, "drwxr-xr-x"},
 		{"directory full perms", os.ModeDir | 0o777, "drwxrwxrwx"},
-		{"directory no perms", os.ModeDir | 0o000, "d---------"},
+		{"directory no perms", os.ModeDir, "d---------"},
 
 		// Symlinks
 		{"symlink", os.ModeSymlink | 0o777, "lrwxrwxrwx"},
