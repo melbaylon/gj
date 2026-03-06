@@ -71,23 +71,24 @@ func TestFormatMode_FileTypeDetection(t *testing.T) {
 // TestFormatMode_PermissionBits tests individual permission bits
 func TestFormatMode_PermissionBits(t *testing.T) {
 	tests := []struct {
+		name     string
 		bit      os.FileMode
 		position int
 		char     byte
 	}{
-		{0o400, 1, 'r'}, // owner read
-		{0o200, 2, 'w'}, // owner write
-		{0o100, 3, 'x'}, // owner execute
-		{0o040, 4, 'r'}, // group read
-		{0o020, 5, 'w'}, // group write
-		{0o010, 6, 'x'}, // group execute
-		{0o004, 7, 'r'}, // other read
-		{0o002, 8, 'w'}, // other write
-		{0o001, 9, 'x'}, // other execute
+		{"owner read", 0o400, 1, 'r'},
+		{"owner write", 0o200, 2, 'w'},
+		{"owner execute", 0o100, 3, 'x'},
+		{"group read", 0o040, 4, 'r'},
+		{"group write", 0o020, 5, 'w'},
+		{"group execute", 0o010, 6, 'x'},
+		{"other read", 0o004, 7, 'r'},
+		{"other write", 0o002, 8, 'w'},
+		{"other execute", 0o001, 9, 'x'},
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.char, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			mode := tt.bit
 			result := FormatMode(mode)
 			if len(result) != 10 {
